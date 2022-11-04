@@ -4,25 +4,50 @@ from matplotlib import pyplot as plt
 
 class MazeReader:
 	def __init__(self, filename):
-		maze = self.open_image_to_arr(filename)
+		self.maze = self.open_image_to_arr(filename)
+		plt.imshow(self.maze, interpolation='nearest')
+		plt.savefig("original.png")
 
-		self.height = len(maze)
-		self.width = len(maze[0])
+		self.height = len(self.maze)
+		self.width = len(self.maze[0])
 
+		v,e = self.get_graph_representation()
+		'''
+		print("New vertices")
+		print(v)
+		print("New edges")
+		print(e)
+		'''
+
+	def get_graph_representation(self):
 		white_coords = []
-		for row in range(len(maze)):
-			for col in range(len(maze[row])):
-				if(maze[row][col][0] == 255):
+		for row in range(len(self.maze)):
+			for col in range(len(self.maze[row])):
+				if(self.maze[row][col][0] == 255):
 					white_coords.append([row, col])
 
-		print(white_coords)
-		print("getting vertices")
 		vertices = self.get_vertices(white_coords)
-		#print(vertices)
+		'''
+		print("Old vertices")
+		print(vertices)
+		'''
 		edges = self.get_edges(vertices)
-		print(edges)
 
-		self.output_vertices(maze, vertices)
+		self.output_vertices(self.maze, vertices)
+
+		# Convert to stage coords
+		stage_vertices = []
+		stage_edges = []
+		for vertex in vertices:
+			stage_vertices.append([vertex[1], self.height - vertex[0] - 1])
+
+		for edge in edges:
+			new_edge = []
+			new_edge.append([edge[0][1], self.height - edge[0][0] - 1])
+			new_edge.append([edge[1][1], self.height - edge[1][0] - 1])
+			stage_edges.append(new_edge)
+
+		return stage_vertices, stage_edges
 
 	'''
 	Get any point of interest, which is an intersection, a dead end, or a corner
@@ -111,7 +136,7 @@ class MazeReader:
 
 
 if __name__ == "__main__":
-	m = MazeReader("tmaze2.png")
+	m = MazeReader("medmaze2.png")
 
 
 
