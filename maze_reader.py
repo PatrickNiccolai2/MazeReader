@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from PIL import Image
 import numpy as np
 from matplotlib import pyplot as plt
@@ -5,19 +7,18 @@ from matplotlib import pyplot as plt
 class MazeReader:
 	def __init__(self, filename):
 		self.maze = self.open_image_to_arr(filename)
-		plt.imshow(self.maze, interpolation='nearest')
-		plt.savefig("original.png")
 
 		self.height = len(self.maze)
 		self.width = len(self.maze[0])
 
 		v,e = self.get_graph_representation()
-		'''
+		
 		print("New vertices")
 		print(v)
 		print("New edges")
 		print(e)
-		'''
+		
+		
 
 	def get_graph_representation(self):
 		white_coords = []
@@ -31,9 +32,9 @@ class MazeReader:
 		print("Old vertices")
 		print(vertices)
 		'''
-		edges = self.get_edges(vertices)
+		edges = self.get_edges(vertices, white_coords)
 
-		self.output_vertices(self.maze, vertices)
+		#self.output_vertices(self.maze, vertices)
 
 		# Convert to stage coords
 		stage_vertices = []
@@ -73,7 +74,7 @@ class MazeReader:
 	'''
 	Once we have vertices, get edges between them 
 	'''
-	def get_edges(self, vertices):
+	def get_edges(self, vertices, white_coords):
 		edges = []
 		# Get horizontal edges
 		for vertex in vertices:
@@ -81,6 +82,10 @@ class MazeReader:
 			while(y_pos < self.width):
 				y_pos += 1
 				new_vertex = [vertex[0], y_pos]
+
+				if(new_vertex not in white_coords):
+					break
+
 				if(new_vertex in vertices):
 					# We found next vertex
 					edges.append([vertex, new_vertex])
@@ -92,6 +97,10 @@ class MazeReader:
 			while(x_pos < self.height):
 				x_pos += 1
 				new_vertex = [x_pos, vertex[1]]
+
+				if(new_vertex not in white_coords):
+					break
+					
 				if(new_vertex in vertices):
 					# We found next vertex
 					edges.append([vertex, new_vertex])
@@ -136,7 +145,7 @@ class MazeReader:
 
 
 if __name__ == "__main__":
-	m = MazeReader("medmaze2.png")
+	m = MazeReader("walltest.png")
 
 
 
