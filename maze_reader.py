@@ -35,6 +35,7 @@ class MazeReader:
 		edges = self.get_edges(vertices, white_coords)
 
 		#self.output_vertices(self.maze, vertices)
+		self.output_tests(self.maze, vertices)
 
 		# Convert to stage coords
 		stage_vertices = []
@@ -143,9 +144,23 @@ class MazeReader:
 		plt.imshow(maze, interpolation='nearest')
 		plt.savefig("intersections.png")
 
+	def output_tests(self, maze, vertices):
+		maze[20,1][0] = 0
+		maze[20,1][2] = 0
+
+		maze[15,4][1] = 0
+		maze[15,4][2] = 0
+
+		maze[10,10][0] = 0
+		maze[10,10][1] = 0
+
+
+		plt.imshow(maze, interpolation='nearest')
+		plt.savefig("experiment.png")
+
 
 if __name__ == "__main__":
-	m = MazeReader("walltest.png")
+	m = MazeReader("smallmaze.png")
 
 
 
